@@ -1,13 +1,13 @@
-import React from 'react';
-import styled from 'styled-components/macro';
+import React from "react";
+import styled, { keyframes } from "styled-components/macro";
 
-import { QUERIES, WEIGHTS } from '../../constants';
-import Logo from '../Logo';
-import Icon from '../Icon';
-import UnstyledButton from '../UnstyledButton';
-import SuperHeader from '../SuperHeader';
-import MobileMenu from '../MobileMenu';
-import VisuallyHidden from '../VisuallyHidden';
+import { QUERIES, WEIGHTS } from "../../constants";
+import Logo from "../Logo";
+import Icon from "../Icon";
+import UnstyledButton from "../UnstyledButton";
+import SuperHeader from "../SuperHeader";
+import MobileMenu from "../MobileMenu";
+import VisuallyHidden from "../VisuallyHidden";
 
 const Header = () => {
   const [showMobileMenu, setShowMobileMenu] = React.useState(false);
@@ -114,16 +114,63 @@ const Filler = styled.div`
   }
 `;
 
-const NavLink = styled.a`
+export default Header;
+
+const NavLink = ({ children, href }) => {
+  return (
+    <NavLinkContainer href={href}>
+      <NavLinkLabel>{children}</NavLinkLabel>
+      <HoveredNavLinkLabel aria-hidden>{children}</HoveredNavLinkLabel>
+    </NavLinkContainer>
+  );
+};
+
+const NavLinkContainer = styled.a`
+  position: relative;
+
+  display: block;
+
   font-size: 1.125rem;
   text-transform: uppercase;
   text-decoration: none;
   color: var(--color-gray-900);
   font-weight: ${WEIGHTS.medium};
 
+  /* Navigation animation */
+  overflow: hidden;
+
   &:first-of-type {
     color: var(--color-secondary);
   }
 `;
 
-export default Header;
+const LabelText = styled.span`
+  display: block;
+  transform: translateY(var(--translate-from));
+  transition: transform 500ms;
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    ${NavLinkContainer}:hover & {
+      transform: translateY(var(--translate-to));
+      transition: transform 250ms;
+    }
+  }
+`;
+
+const NavLinkLabel = styled(LabelText)`
+  --translate-from: 0%;
+  --translate-to: -100%;
+`;
+
+const HoveredNavLinkLabel = styled(LabelText)`
+  --translate-from: 100%;
+  --translate-to: 0%;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  height: 100%;
+  font-weight: ${WEIGHTS.bold};
+  width: 100%;
+`;
